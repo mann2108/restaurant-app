@@ -1,4 +1,6 @@
-function Home() {
+import "../style/home.css";
+
+function HomePage() {
     return (
         <>
             <h1>Home Page</h1>
@@ -6,4 +8,4 @@ function Home() {
     )
 }
 
-export default Home;
+export default HomePage;

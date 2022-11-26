@@ -1,8 +1,8 @@
+import LoginForm from "../components/Welcome/LoginForm";
+
 function Welcome() {
     return (
-        <>
-            <h1>Welcome Page</h1>
-        </>
+        <LoginForm />
     )
 }
 

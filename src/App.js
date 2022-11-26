@@ -5,15 +5,15 @@ import Home from './pages/Home';
 
 function App() {
   return (
-    <div className="App"> 
+    <> 
       <Switch>
-        <Route component={Welcome} path="/welcome" exact />
-        <Route component={Home} path="/home" exact />
-        <Route exact path="/*">
-          <Redirect to="/Welcome" />
+        <Route exact path="/home" component={Home} />
+        <Route exact path="/" component={Welcome} />
+        <Route path="/*">
+            <Redirect to="/" />
         </Route>
       </Switch>
-    </div>
+    </>
   );
 }
 
