@@ -120,12 +120,15 @@ function Home() {
   }, [])
 
   useEffect(() => {
-    setCookie("user_session", {
-      searched_restaurants,
-      bookmarked_restaurants,
-    },{
-      maxAge: 172800
-    });
+    const user_session = cookies.user_session;
+    if (user_session !== undefined) {
+      setCookie("user_session", {
+        searched_restaurants,
+        bookmarked_restaurants,
+      },{
+        maxAge: 172800
+      });
+    }
   }, [searched_restaurants, bookmarked_restaurants]);
 
   const handleDrawerOpen = () => {
