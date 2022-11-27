@@ -6,13 +6,15 @@ import { useDispatch } from "react-redux";
 
 import API from '../../api';
 import { restaurantActions } from "../../store";
+import { ADD_TEXT } from '../../constants';
 
 function Search() {
+    const dispatch = useDispatch();
+
     const [restaurantOptions, setRestaurantOptions] = useState([]);
     const [searchText, setSearchText] = useState("");
     const [loading, setLoading] = useState(true);
     const [selectedOption, setSelectedOption] = useState("");
-    const dispatch = useDispatch();
     
     useEffect(() => {
         setLoading(true);
@@ -50,13 +52,13 @@ function Search() {
                 id="restaurants"
                 options={restaurantOptions.map((option) => option.fields.Name)}
                 sx={{ width: '100%' }}
-                renderInput={(params) => <TextField {...params} label="Restaurants" />}
+                renderInput={(params) => <TextField {...params} label="Search Restaurants" />}
                 onInputChange={handleInputChange}
                 onChange={handleChange}
                 loading={loading}
                 error={"true"}
             />
-            <Button variant="contained" disabled={selectedOption === ""} onClick={addRestaurant}>Add</Button>
+            <Button variant="contained" disabled={selectedOption === ""} onClick={addRestaurant}>{ADD_TEXT}</Button>
         </Stack>
     );
 }

@@ -20,14 +20,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Bookmarks from '@mui/icons-material/Bookmarks';
 import Home from '@mui/icons-material/Home';
+import { Stack } from '@mui/system';
 
 import Search from './Search';
 import MapGrid from './MapGrid';
-import BookmarkMapGrid from './BookmarkMapGrid';
+import { LAYOUT_TYPES, DRAWER_WIDTH, HOME_TEXT, BOOKMARK_TEXT } from '../../constants';
 
-import { Stack } from '@mui/system';
-
-const drawerWidth = 200;
+const drawerWidth = DRAWER_WIDTH;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -55,7 +54,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -142,7 +140,7 @@ function NavigationBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            { isSelected ? "Home" : "Bookmark"}
+            { isSelected ? HOME_TEXT : BOOKMARK_TEXT}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -154,7 +152,7 @@ function NavigationBar() {
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem key={"Home"} disablePadding sx={{ display: 'block' }}>
+          <ListItem key={HOME_TEXT} disablePadding sx={{ display: 'block' }}>
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -173,10 +171,10 @@ function NavigationBar() {
               >
                 <Home />
               </ListItemIcon>
-              <ListItemText primary={"Home"} sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
-          <ListItem key={"Bookmark"} disablePadding sx={{ display: 'block' }}>
+          <ListItem key={BOOKMARK_TEXT} disablePadding sx={{ display: 'block' }}>
             <ListItemButton
               sx={{
                 minHeight: 48,
@@ -195,7 +193,7 @@ function NavigationBar() {
               >
                 <Bookmarks />
               </ListItemIcon>
-              <ListItemText primary={"Bookmark"} sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>
@@ -205,12 +203,12 @@ function NavigationBar() {
           { isSelected &&
             <Stack>
               <Search /> 
-              <MapGrid />
+              <MapGrid type={ LAYOUT_TYPES.SEARCH }/>
             </Stack>
           }
           { !isSelected &&
             <Stack>
-              <BookmarkMapGrid />
+              <MapGrid type={ LAYOUT_TYPES.BOOKMARK }/>
             </Stack>
           }
       </Box>

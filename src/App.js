@@ -1,18 +1,43 @@
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material';
 
-import Welcome from './pages/Welcome';
-import Dashboard from './pages/Dashboard';
+import './style/index.css';
+import Routes from './routes';
+
+const darkTheme = createTheme({
+  typography: {
+    fontFamily: [
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+    fontSize: 14,
+    h2: {
+      fontSize: 24,
+      fontWeight: 700,
+      color: "#ff9016",
+    },
+    h6: {
+      fontWeight: 500,
+    },
+    button: {
+      fontWeight: 700,
+    },
+  },
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: "#ff9016",
+      contrastText: "#fff"
+    }
+  },
+});
 
 function App() {
   return (
-    <Switch>
-      <Route exact path="/home" component={Dashboard} />
-      <Route exact path="/bookmark" component={Dashboard} />
-      <Route exact path="/" component={Welcome} />
-      <Route path="/*">
-          <Redirect to="/" />
-      </Route>
-    </Switch>
+    <ThemeProvider theme={darkTheme}>
+      <Routes />
+    </ThemeProvider>
   );
 }
 

@@ -1,7 +1,8 @@
 import Grid from '@mui/material/Grid';
+
 import { BACKGROUND_IMAGE_URL } from '../../constants';
 
-function WelcomeTemplate() {
+function SideView() {
     return (
         <Grid
             item
@@ -17,4 +18,4 @@ function WelcomeTemplate() {
     )
 }
 
-export default WelcomeTemplate;
+export default SideView;

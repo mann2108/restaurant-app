@@ -9,7 +9,8 @@ import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import { useTheme } from '@emotion/react';
 
 import API from '../../api';
 
@@ -18,30 +19,34 @@ import {
     LOGO_IMAGE_URL,
     SIGN_IN_TEXT,
     FORGOT_PASSWORD_TEXT,
-    DONT_HAVE_AN_ACCOUNT_TEXT
+    DONT_HAVE_AN_ACCOUNT_TEXT,
+    AUTHENTICATION_FAILED_TEXT,
+    NAME_CANNOT_BE_EMPTY_TEXT,
+    PASSWORD_CANNOT_BE_EMPTY_TEXT
 } from '../../constants';
-import WelcomeTemplate from "./WelcomeTemplate";
+import SideView from "./SideView";
+
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const theme = createTheme();
-
 function LoginForm() {
     const history = useHistory();
-
+    const theme = useTheme();
+    
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [nameHelperText, setNameHelperText] = useState("");
     const [passwordHelperText, setPasswordHelperText] = useState("");
     const [authenticationErrorMessage, setAuthenticationErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    
     const handleNameChange = (event) => {
         if (authenticationErrorMessage !== "") setAuthenticationErrorMessage("");
         setName(event.target.value);
         if (event.target.value === "") {
-            setNameHelperText("Name cannot be empty");
+            setNameHelperText(NAME_CANNOT_BE_EMPTY_TEXT);
         } else {
             setNameHelperText("");
         }
@@ -51,7 +56,7 @@ function LoginForm() {
         if (authenticationErrorMessage !== "") setAuthenticationErrorMessage("");
         setPassword(event.target.value);
         if (event.target.value === "") {
-            setPasswordHelperText("Password cannot be emtpy");
+            setPasswordHelperText(PASSWORD_CANNOT_BE_EMPTY_TEXT);
         } else {
             setPasswordHelperText("");
         }
@@ -62,11 +67,11 @@ function LoginForm() {
         var isNameValid = true;
         var isPasswordValid = true;
         if (name === "") {
-            setNameHelperText("Name cannot be emtpy");
+            setNameHelperText(NAME_CANNOT_BE_EMPTY_TEXT);
             isNameValid = false;
         }
         if (password === "") {
-            setPasswordHelperText("Password cannot be emtpy");
+            setPasswordHelperText(PASSWORD_CANNOT_BE_EMPTY_TEXT);
             isPasswordValid = false;
         }
         if (isNameValid && isPasswordValid) {
@@ -87,7 +92,7 @@ function LoginForm() {
             if (record != null) {
                 history.push("/home");
             } else {
-                setAuthenticationErrorMessage("Authentication Failed")
+                setAuthenticationErrorMessage(AUTHENTICATION_FAILED_TEXT)
             }
             setIsLoading(false);
         })
@@ -101,7 +106,7 @@ function LoginForm() {
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{ height: '100vh' }}>
                 <CssBaseline />
-                <WelcomeTemplate />
+                <SideView />
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                     <Box
                         sx={{
@@ -146,6 +151,7 @@ function LoginForm() {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                                 loading={isLoading}
+                                color="primary"
                             >
                                 {SIGN_IN_TEXT}
                             </LoadingButton>
