@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from "react-redux";
 
 import { Autocomplete, Button, TextField } from "@mui/material";
 import { Stack } from '@mui/system';
@@ -6,7 +7,7 @@ import { useDispatch } from "react-redux";
 
 import API from '../../api';
 import { restaurantActions } from "../../store";
-import { ADD_TEXT } from '../../constants';
+import { ADD_TEXT, RESTAURANT_ADDED_TEXT, RESTAURANT_ALREADY_ADDED_TEXT } from '../../constants';
 
 function Search() {
     const dispatch = useDispatch();
@@ -15,7 +16,8 @@ function Search() {
     const [searchText, setSearchText] = useState("");
     const [loading, setLoading] = useState(true);
     const [selectedOption, setSelectedOption] = useState("");
-    
+    const restaurants = useSelector(state =>  state.restaurantReducer.restaurants);
+
     useEffect(() => {
         setLoading(true);
         API.get('/restaurants', {
@@ -43,7 +45,27 @@ function Search() {
         setSelectedOption(event.target.innerText);
     }
     const addRestaurant = () => {
-        dispatch(restaurantActions.addRestaurant(searchText));
+        const ind = restaurants.indexOf(searchText);
+        if (ind === -1) {
+            dispatch(restaurantActions.addRestaurant(searchText));
+            dispatch(restaurantActions.setToastDetails(
+                {type: "success", message: RESTAURANT_ADDED_TEXT}
+            ));
+            setTimeout(() => {
+                dispatch(restaurantActions.setToastDetails(
+                    {type: "", message: ""}
+                ));
+            }, 1000)
+        } else {
+            dispatch(restaurantActions.setToastDetails(
+                {type: "info", message: RESTAURANT_ALREADY_ADDED_TEXT}
+            ));
+            setTimeout(() => {
+                dispatch(restaurantActions.setToastDetails(
+                    {type: "", message: ""}
+                ));
+            }, 1000)
+        }
     }
 
     return (

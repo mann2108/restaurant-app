@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -25,6 +26,7 @@ import { Stack } from '@mui/system';
 import Search from './Search';
 import MapGrid from './MapGrid';
 import { LAYOUT_TYPES, DRAWER_WIDTH, HOME_TEXT, BOOKMARK_TEXT } from '../../constants';
+import Alert from '../Shared/Alert';
 
 const drawerWidth = DRAWER_WIDTH;
 
@@ -96,6 +98,8 @@ function NavigationBar() {
   
   const theme = useTheme();
   const history = useHistory();
+  const toastMessage = useSelector(state => state.restaurantReducer.toast.message);
+  const toastType = useSelector(state => state.restaurantReducer.toast.type);
 
   const [open, setOpen] = useState(false);
   const [isSelected, setIsSelected] = useState(true);
@@ -171,7 +175,7 @@ function NavigationBar() {
               >
                 <Home />
               </ListItemIcon>
-              <ListItemText sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary={HOME_TEXT} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
           <ListItem key={BOOKMARK_TEXT} disablePadding sx={{ display: 'block' }}>
@@ -193,7 +197,7 @@ function NavigationBar() {
               >
                 <Bookmarks />
               </ListItemIcon>
-              <ListItemText sx={{ opacity: open ? 1 : 0 }} />
+              <ListItemText primary={BOOKMARK_TEXT} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>
@@ -212,6 +216,11 @@ function NavigationBar() {
             </Stack>
           }
       </Box>
+      { toastMessage !== "" &&
+        <Alert severity={toastType} style={{position: "absolute", bottom: 30, left: "43%"}}>
+          {toastMessage}
+        </Alert>
+      }
     </Box>
   );
 }

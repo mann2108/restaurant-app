@@ -6,7 +6,9 @@ import {
     BOOKMARK_TEXT, 
     DATA_STUDIO_URL, 
     LAYOUT_TYPES, 
-    REMOVE_TEXT 
+    REMOVE_TEXT, 
+    RESTAURANT_MOVED_TO_BOOKMARKS_TEXT, 
+    RESTAURANT_REMOVED_TEXT
 } from "../../constants";
 
 function Map(props) {
@@ -14,6 +16,36 @@ function Map(props) {
     const addToBookmark = () => {
         dispatch(restaurantActions.addRestaurantInBookmark(props.restaurantName));
         dispatch(restaurantActions.removeRestaurant(props.restaurantName));
+        dispatch(restaurantActions.setToastDetails(
+            {type: "success", message: RESTAURANT_MOVED_TO_BOOKMARKS_TEXT}
+        ));
+        setTimeout(() => {
+            dispatch(restaurantActions.setToastDetails(
+                {type: "", message: ""}
+            ));
+        }, 1000)
+    }
+    const removeRestaurant = () => {
+        dispatch(restaurantActions.removeRestaurant(props.restaurantName));
+        dispatch(restaurantActions.setToastDetails(
+            {type: "success", message: RESTAURANT_REMOVED_TEXT}
+        ));
+        setTimeout(() => {
+            dispatch(restaurantActions.setToastDetails(
+                {type: "", message: ""}
+            ));
+        }, 1000)
+    }
+    const removeRestaurantFromBookmark = () => {
+        dispatch(restaurantActions.removeRestaurantFromBookmark(props.restaurantName));
+        dispatch(restaurantActions.setToastDetails(
+            {type: "success", message: RESTAURANT_REMOVED_TEXT}
+        ));
+        setTimeout(() => {
+            dispatch(restaurantActions.setToastDetails(
+                {type: "", message: ""}
+            ));
+        }, 1000)
     }
     return (
         <Card sx={{ border: 1, mt: 3, borderColor: 'primary.main' }}>
@@ -29,12 +61,12 @@ function Map(props) {
                 <Stack spacing={2} direction="row" sx={{mt:2}}>
                     { props.type === LAYOUT_TYPES.SEARCH && 
                         <>
-                            <Button variant="contained" onClick={() =>  dispatch(restaurantActions.removeRestaurant(props.restaurantName))}>Remove</Button>
+                            <Button variant="contained" onClick={removeRestaurant}>{REMOVE_TEXT}</Button>
                             <Button variant="contained" onClick={addToBookmark}>{BOOKMARK_TEXT}</Button>
                         </>
                     }
                     { props.type === LAYOUT_TYPES.BOOKMARK && 
-                        <Button variant="contained" onClick={() =>  dispatch(restaurantActions.removeRestaurantFromBookmark(props.restaurantName))}>{REMOVE_TEXT}</Button>
+                        <Button variant="contained" onClick={removeRestaurantFromBookmark}>{REMOVE_TEXT}</Button>
                     }
                 </Stack>
             </CardContent>

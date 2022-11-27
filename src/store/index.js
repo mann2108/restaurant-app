@@ -2,7 +2,11 @@ import { createSlice, configureStore } from '@reduxjs/toolkit';
 
 const initialState = {
     restaurants: [],
-    bookmarkedRestaurants: []
+    bookmarkedRestaurants: [],
+    toast: {
+        type: "",
+        message: ""
+    }
 };
 
 
@@ -25,6 +29,12 @@ const restaurantSlice = createSlice({
         removeRestaurantFromBookmark(state, action) {
             const ind = state.bookmarkedRestaurants.indexOf(action.payload);
             state.bookmarkedRestaurants.splice(ind, 1);
+        },
+        setToastDetails(state, action) {
+            state.toast = {
+                type: action.payload.type,
+                message: action.payload.message
+            }
         }
     }
 });

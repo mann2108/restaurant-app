@@ -10,7 +10,6 @@ import {
 import Map from "./Map";
 
 function MapGrid(props) {
-    
     const restaurants = useSelector(state => 
         props.type === LAYOUT_TYPES.SEARCH ? 
             state.restaurantReducer.restaurants : state.restaurantReducer.bookmarkedRestaurants);

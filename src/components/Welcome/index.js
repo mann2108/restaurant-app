@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
 
-import MuiAlert from '@mui/material/Alert';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -13,7 +13,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { useTheme } from '@emotion/react';
 
 import API from '../../api';
-
+import Alert from '../Shared/Alert';
 import { 
     LOGO_TEXT, 
     LOGO_IMAGE_URL,
@@ -25,25 +25,22 @@ import {
     PASSWORD_CANNOT_BE_EMPTY_TEXT
 } from '../../constants';
 import SideView from "./SideView";
-
-
-const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+import { restaurantActions } from "../../store";
 
 function LoginForm() {
     const history = useHistory();
     const theme = useTheme();
+    const dispatch = useDispatch();
     
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [nameHelperText, setNameHelperText] = useState("");
     const [passwordHelperText, setPasswordHelperText] = useState("");
-    const [authenticationErrorMessage, setAuthenticationErrorMessage] = useState("");
+    const toastMessage = useSelector(state => state.restaurantReducer.toast.message);
+    const toastType = useSelector(state => state.restaurantReducer.toast.type);
     const [isLoading, setIsLoading] = useState(false);
     
     const handleNameChange = (event) => {
-        if (authenticationErrorMessage !== "") setAuthenticationErrorMessage("");
         setName(event.target.value);
         if (event.target.value === "") {
             setNameHelperText(NAME_CANNOT_BE_EMPTY_TEXT);
@@ -53,7 +50,6 @@ function LoginForm() {
     }
 
     const handlePasswordChange = (event) => {
-        if (authenticationErrorMessage !== "") setAuthenticationErrorMessage("");
         setPassword(event.target.value);
         if (event.target.value === "") {
             setPasswordHelperText(PASSWORD_CANNOT_BE_EMPTY_TEXT);
@@ -89,15 +85,29 @@ function LoginForm() {
             const record = data.find(record => {
                 return record.fields.username === name && record.fields.password === password;
             });
-            if (record != null) {
+            if (record) {
                 history.push("/home");
             } else {
-                setAuthenticationErrorMessage(AUTHENTICATION_FAILED_TEXT)
+                dispatch(restaurantActions.setToastDetails(
+                    {type: "error", message: AUTHENTICATION_FAILED_TEXT}
+                ));
+                setTimeout(() => {
+                    dispatch(restaurantActions.setToastDetails(
+                        {type: "", message: ""}
+                    ));
+                }, 1000)
             }
             setIsLoading(false);
         })
         .catch(err => {
-            console.error(err);
+            dispatch(restaurantActions.setToastDetails(
+                {type: "error", message: AUTHENTICATION_FAILED_TEXT}
+            ));
+            setTimeout(() => {
+                dispatch(restaurantActions.setToastDetails(
+                    {type: "", message: ""}
+                ));
+            }, 1000)
             setIsLoading(false);
         });
     }
@@ -168,8 +178,8 @@ function LoginForm() {
                                 </Grid>
                             </Grid>
                         </Box>
-                        { authenticationErrorMessage !== "" &&
-                            <Alert severity="error" style={{position: "absolute", bottom: 30, align: "center"}}>{authenticationErrorMessage}</Alert>
+                        { toastMessage !== "" &&
+                            <Alert severity={toastType} style={{position: "absolute", bottom: 30, align: "center"}}>{toastMessage}</Alert>
                         }
                     </Box>
                 </Grid>
