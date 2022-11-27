@@ -35,7 +35,14 @@ const restaurantSlice = createSlice({
                 type: action.payload.type,
                 message: action.payload.message
             }
+        },
+        updateRestaurants(state, action) {
+            state.restaurants = action.payload.slice();
+        },
+        updateBookmarkRestaurants(state, action) {
+            state.bookmarkedRestaurants = action.payload.slice();
         }
+
     }
 });
 

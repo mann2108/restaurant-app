@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from 'react-redux';
+import { useCookies } from 'react-cookie'
 
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -20,13 +21,14 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Bookmarks from '@mui/icons-material/Bookmarks';
-import Home from '@mui/icons-material/Home';
+import HomeIcon from '@mui/icons-material/Home';
 import { Stack } from '@mui/system';
 
 import Search from './Search';
 import MapGrid from './MapGrid';
 import { LAYOUT_TYPES, DRAWER_WIDTH, HOME_TEXT, BOOKMARK_TEXT } from '../../constants';
 import Alert from '../Shared/Alert';
+import { restaurantActions } from "../../store";
 
 const drawerWidth = DRAWER_WIDTH;
 
@@ -94,16 +96,38 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-function NavigationBar() {
+function Home() {
   
   const theme = useTheme();
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const toastMessage = useSelector(state => state.restaurantReducer.toast.message);
   const toastType = useSelector(state => state.restaurantReducer.toast.type);
+  const searched_restaurants = useSelector(state => state.restaurantReducer.restaurants);
+  const bookmarked_restaurants = useSelector(state => state.restaurantReducer.bookmarkedRestaurants);
+  const [cookies, setCookie, removeCookie] = useCookies(['user_session']);
 
   const [open, setOpen] = useState(false);
   const [isSelected, setIsSelected] = useState(true);
-  
+
+  useEffect(() => {
+    const user_session = cookies.user_session;
+    if (user_session !== undefined) {
+      dispatch(restaurantActions.updateRestaurants(user_session.searched_restaurants));
+      dispatch(restaurantActions.updateBookmarkRestaurants(user_session.bookmarked_restaurants));
+    }
+  }, [])
+
+  useEffect(() => {
+    setCookie("user_session", {
+      searched_restaurants,
+      bookmarked_restaurants,
+    },{
+      maxAge: 172800
+    });
+  }, [searched_restaurants, bookmarked_restaurants]);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -173,7 +197,7 @@ function NavigationBar() {
                   justifyContent: 'center',
                 }}
               >
-                <Home />
+                <HomeIcon />
               </ListItemIcon>
               <ListItemText primary={HOME_TEXT} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
@@ -225,4 +249,4 @@ function NavigationBar() {
   );
 }
 
-export default NavigationBar;
+export default Home;

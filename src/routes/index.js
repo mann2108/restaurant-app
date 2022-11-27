@@ -1,13 +1,14 @@
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 import Welcome from '../components/Welcome';
-import Home from '../components/Home';
+
+import ProtectedHome from '../protected/ProtectedHome';
 
 function Routes() {
   return (
       <Switch>
-        <Route exact path="/home" component={Home} />
-        <Route exact path="/bookmark" component={Home} />
+        <Route exact path="/home" component={ProtectedHome} />
+        <Route exact path="/bookmark" component={ProtectedHome} />
         <Route exact path="/" component={Welcome} />
         <Route path="/*">
             <Redirect to="/" />

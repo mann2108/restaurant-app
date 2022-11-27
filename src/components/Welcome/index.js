@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
+import { useCookies } from 'react-cookie';
 
 import LoadingButton from '@mui/lab/LoadingButton';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -31,6 +32,7 @@ function LoginForm() {
     const history = useHistory();
     const theme = useTheme();
     const dispatch = useDispatch();
+    const [cookies, setCookie, removeCookie] = useCookies(['user_session']);
     
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
@@ -39,7 +41,7 @@ function LoginForm() {
     const toastMessage = useSelector(state => state.restaurantReducer.toast.message);
     const toastType = useSelector(state => state.restaurantReducer.toast.type);
     const [isLoading, setIsLoading] = useState(false);
-    
+
     const handleNameChange = (event) => {
         setName(event.target.value);
         if (event.target.value === "") {
@@ -86,6 +88,7 @@ function LoginForm() {
                 return record.fields.username === name && record.fields.password === password;
             });
             if (record) {
+                setCookie("user_session", {searched_restaurants: [], bookmarked_restaurants: []}, {maxAge: 172800});
                 history.push("/home");
             } else {
                 dispatch(restaurantActions.setToastDetails(
@@ -100,8 +103,9 @@ function LoginForm() {
             setIsLoading(false);
         })
         .catch(err => {
+            console.error(err);
             dispatch(restaurantActions.setToastDetails(
-                {type: "error", message: AUTHENTICATION_FAILED_TEXT}
+                {type: "error", message: err.message}
             ));
             setTimeout(() => {
                 dispatch(restaurantActions.setToastDetails(
